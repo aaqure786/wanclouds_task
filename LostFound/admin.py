@@ -1,3 +1,8 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import UserRegistration,Lost_Item,Found_Item
+
+
+admin.site.register(UserRegistration)
+admin.site.register(Lost_Item)
+admin.site.register(Found_Item)
