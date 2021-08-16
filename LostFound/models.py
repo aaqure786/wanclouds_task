@@ -1,4 +1,8 @@
 from django.db import models
+from django.conf import settings
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from rest_framework.authtoken.models import Token
 
 # Creating a model 
 class UserRegistration(models.Model):
@@ -11,11 +15,16 @@ class UserRegistration(models.Model):
 
     def __str__(self):
         return self.user_name
+    @receiver(post_save,sender =settings.AUTH_USER_MODEL)
+    def creat_aut_token(sender,instance=None,created = False,**kwarg):
+        if created:
+            Token.objects.create(user=instance)
+
 
 class Found_Item(models.Model):
     item_name = models.CharField(max_length=20,null=False)
     location= models.CharField(max_length=20,null=False)
-    desciption =models.CharField(max_length=100,)
+    description =models.CharField(max_length=100,null = True)
     image = models.ImageField(upload_to="images/")
     user = models.ForeignKey(UserRegistration,on_delete=models.CASCADE)
     contact =models.CharField(max_length=15,null=False,blank=False)
@@ -28,7 +37,7 @@ class Found_Item(models.Model):
 class Lost_Item(models.Model):
     item_name = models.CharField(max_length=20,null=False)
     location= models.CharField(max_length=20,null=False)
-    desciption =models.CharField(max_length=100,)
+    description =models.CharField(max_length=100,null = True)
     image = models.ImageField(upload_to="images/")
     user = models.ForeignKey(UserRegistration,on_delete=models.CASCADE)
     contact =models.CharField(max_length=15,null=False,blank=False)
