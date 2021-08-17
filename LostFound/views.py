@@ -1,3 +1,4 @@
+
 from re import S
 from django.shortcuts import render
 from rest_framework import serializers
@@ -8,6 +9,39 @@ from .models import Lost_Item, UserRegistration,Found_Item
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
+from rest_framework import generics
+from rest_framework import mixins
+
+
+# creating generic views
+class GeneriApiView(
+        generics.GenericAPIView,
+        mixins.ListModelMixin,
+        mixins.CreateModelMixin,
+        mixins.DestroyModelMixin,
+        mixins.RetrieveModelMixin,
+        mixins.UpdateModelMixin
+        ):
+    serializer_class = UserRegSerializer
+    queryset = UserRegistration.objects.all()
+    lookup_field='id'
+    def get(self,request,id = None):
+        if id:
+            return self.retrieve(request)
+        else:
+            return self.list(request)
+    def put(self,request,id=None):
+        if id:
+            return self.update(request)
+        else:
+            return self.create(request)
+    def delete(self,request,id):
+        return self.destroy(request,id)
+
+    
+
+
+
 # Class to Creat User Account
 class UserRegAPI(APIView):
     #Function to show the registered users
